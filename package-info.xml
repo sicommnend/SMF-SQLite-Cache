@@ -8,7 +8,7 @@
 <install>
 	<readme parsebbc="true">license.txt</readme>
 	<modification format="xml" type="file">install.xml</modification>
-	<require-dir name="Sources" destination="$boarddir" />
+	<require-file name="SQLite3cache.php" destination="$sourcedir" />
 </install>
 <uninstall>
 	<modification reverse="true">install.xml</modification>
