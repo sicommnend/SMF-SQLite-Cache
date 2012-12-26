@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>NEND:sqlitecache</id>
+	<version>1.0.5.1</version>
+	<file name="$sourcedir/Load.php">
+		<operation>
+			<search position="after"><![CDATA[	// Zend Platform/ZPS/etc.
+	elseif (function_exists('output_cache_put'))
+		output_cache_put($key, $value);
+	elseif (function_exists('xcache_set') && ini_get('xcache.var_size') > 0)
+	{
+		if ($value === null)
+			xcache_unset($key);
+		else
+			xcache_set($key, $value, $ttl);
+	}]]></search>
+			<add><![CDATA[	// SI Cache
+	elseif (function_exists('sicache_put'))
+	{
+		sicache_put($key, $value, $ttl);
+	}
+]]></add>
+		</operation>
+		<operation>
+			<search position="after"><![CDATA[	// Zend's pricey stuff.
+	elseif (function_exists('output_cache_get'))
+		$value = output_cache_get($key, $ttl);
+	elseif (function_exists('xcache_get') && ini_get('xcache.var_size') > 0)
+		$value = xcache_get($key);
+	]]></search>
+			<add><![CDATA[	elseif (function_exists('sicache_get'))
+		$value = sicache_get($key);]]></add>
+		</operation>
+	</file>
+	<file name="$boarddir/index.php">
+		<operation>
+			<search position="before"><![CDATA[// And important includes.
+require_once($sourcedir . '/QueryString.php');
+require_once($sourcedir . '/Subs.php');
+require_once($sourcedir . '/Errors.php');
+require_once($sourcedir . '/Load.php');
+require_once($sourcedir . '/Security.php');]]></search>
+			<add><![CDATA[
+require_once($sourcedir . '/SQLite3cache.php');
+]]></add>
+		</operation>
+	</file>
+	<file name="$sourcedir/Subs.php">
+		<operation>
+			<search position="before"><![CDATA[// Empty out the cache folder.
+function clean_cache($type = '')
+{
+	global $cachedir, $sourcedir;
+]]></search>
+			<add><![CDATA[
+	// SI Cache
+	if (function_exists('sicache_clean'))
+		sicache_clean($type);
+		return;
+]]></add>
+		</operation>
+	</file>
+</modification>

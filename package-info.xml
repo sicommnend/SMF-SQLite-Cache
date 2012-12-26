@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>NEND:sqlitecache</id>
+	<name>SQLite3 Cache</name>
+	<version>1.0.5.1</version>
+	<type>modification</type>
+<install>
+	<readme parsebbc="true">license.txt</readme>
+	<modification format="xml" type="file">install.xml</modification>
+	<require-dir name="Sources" destination="$boarddir" />
+</install>
+<uninstall>
+	<modification reverse="true">install.xml</modification>
+	<remove-file name="$sourcedir/SQLite3cache.php" />
+</uninstall>
+</package-info>
